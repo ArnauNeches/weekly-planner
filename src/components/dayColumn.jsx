@@ -14,17 +14,19 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
         <span className="text-sm text-slate-500 font-mono">{tasks.length}</span>
       </div>
 
-      <div className="bg-slate-100 p-2 rounded-xl hover:shadow-md flex justify-between items-start">
-        <input value={newTask} className="bg-slate-300 border border-black rounded-xl p-1" type="text" onChange={e=>setNewTask(e.target.value)}/>
-        <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" onClick={()=>{
+      <form 
+        onSubmit={()=>{
             if (!newTask.trim()) return;
             onNewTask(children, newTask);
             setNewTask("");
           }}
-        >
+        className="bg-slate-100 p-2 rounded-xl hover:shadow-md flex justify-between items-start"
+      >
+        <input value={newTask} className="bg-slate-300 border border-black rounded-xl p-1" type="text" onChange={e=>setNewTask(e.target.value)}/>
+        <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" type="submit">
           <ListPlus size={22} />
         </button>
-      </div>
+      </form>
 
       <div className="flex flex-col gap-2 min-h-50 lg:h-60 lg:overflow-y-auto">
         {tasks.map((task) => (

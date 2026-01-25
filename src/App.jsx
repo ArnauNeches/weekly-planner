@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DayColumn from "./components/dayColumn"
 import {initialData, DAYS} from "./data/initialData"
 import {v4 as uuidv4} from 'uuid';
 
 function App() {
-  const [weekData, setWeekData] = useState(initialData);
+  const [weekData, setWeekData] = useState( () => {
+    const storage = localStorage.getItem("weekly-planner-data");
+    if (storage) return JSON.parse(storage);
+    return initialData;
+  }
+);
   
+  useEffect(() => {
+    const newData = JSON.stringify(weekData);
+    localStorage.setItem("weekly-planner-data", newData);
+  }, [weekData]);
+
   function handleDeleteTask(day, id){
     const dayKey = day.toLowerCase();
 
