@@ -7,30 +7,34 @@ function App() {
   const [weekData, setWeekData] = useState(initialData);
   
   function handleDeleteTask(day, id){
+    const dayKey = day.toLowerCase();
+
     setWeekData(prevWeekData => {
       return ({
         ...prevWeekData,
-        [day.toLowerCase()]: [
-          ...prevWeekData[day.toLowerCase()].filter(task => task.id !== id)
+        [dayKey]: [
+          ...prevWeekData[dayKey].filter(task => task.id !== id)
         ]
       })
     });
   }
 
   function handleChangeStatus(day, newStatus, id){
+    const dayKey = day.toLowerCase();
 
-    setWeekData(prevWeekData => {
-      let editedEntry = prevWeekData[day.toLowerCase()].filter(task => task.id === id)[0];
-      editedEntry.status = newStatus;
-      return ({
-          ...prevWeekData,
-          [day.toLowerCase()]: [
-            ...prevWeekData[day.toLowerCase()].filter(task => task.id !== id),
-            editedEntry
-          ]
-        })
+    setWeekData(prev => {
+      const dayTasks = prev[dayKey];
+      const updatedTasks = dayTasks.map(task => {
+        if (task.id == id) return {...task, status: newStatus};
+        return task;
       });
-  }
+
+      return {
+        ...prev,
+        [dayKey]: updatedTasks
+      };
+  });
+}
 
   function handleAddTask(day, text){
 

@@ -15,8 +15,13 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
       </div>
 
       <div className="bg-slate-100 p-2 rounded-xl hover:shadow-md flex justify-between items-start">
-        <input className="bg-slate-300 border border-black rounded-xl p-1" type="text" onChange={e=>setNewTask(e.target.value)}/>
-        <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" onClick={()=>onNewTask(children, newTask)}>
+        <input value={newTask} className="bg-slate-300 border border-black rounded-xl p-1" type="text" onChange={e=>setNewTask(e.target.value)}/>
+        <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" onClick={()=>{
+            if (!newTask.trim()) return;
+            onNewTask(children, newTask);
+            setNewTask("");
+          }}
+        >
           <ListPlus size={22} />
         </button>
       </div>
