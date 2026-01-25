@@ -1,12 +1,24 @@
 import TaskItem from "./taskItem"
 
-export default function DayColumn({children, tasks}){
-    return (
-        <section className="basis-xl grid gap-2 auto-rows-min">
-            <h3 className="bg-white w-sm min-h-12 flex items-center justify-center font-bold text-2xl rounded-xl tracking-wider">{children}</h3>
-            {tasks.map(task => {
-                return <TaskItem name={task.name} status={task.status} createdAt={task.createdAt} key={task.id}/>
-            })}
-        </section>
-    )
+export default function DayColumn({ children, tasks }) {
+  // Capitalize first letter
+  const title = children.charAt(0).toUpperCase() + children.slice(1);
+
+  return (
+    <section className="w-full max-w-sm flex flex-col gap-4">
+      <div className="bg-slate-100 p-4 rounded-xl shadow-md flex justify-between items-center sticky top-0 z-10">
+        <h3 className="font-bold text-xl text-slate-800">{title}</h3>
+        <span className="text-sm text-slate-500 font-mono">{tasks.length}</span>
+      </div>
+      
+      <div className="flex flex-col gap-3 min-h-[200px]">
+        {tasks.map((task) => (
+          <TaskItem 
+            key={task.id} 
+            task={task} 
+          />
+        ))}
+      </div>
+    </section>
+  );
 }

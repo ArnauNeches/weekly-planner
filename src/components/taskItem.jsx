@@ -1,17 +1,43 @@
-export default function TaskItem({name, status, createdAt}) {
-    return (
-        <div className="w-sm min-h-12 bg-gray-100 rounded-xl flex items-center justify-between pl-4 group">
-            <span className="text-lg font-medium">{name}</span>
-            <select name="status" id="version-select" className="bg-gray-200 rounded-md border border-black cursor-pointer">
-                <option value="Pending">Pending</option>
-                <option value="Completed">Done</option>
-                <option value="Not completed">Not done</option>
-            </select>
-            <button className="text-red-600 cursor-pointer opacity-0 transition group-hover:opacity-100 hover:scale-120 relative">
-                <svg className="absolute -top-2 -left-6 w-7 h-7 fill-current">
-                    <use href="src/assets/svg/icons.svg#delete"></use>
-                </svg>
-            </button>
-        </div>
-    )
+import { Trash2 } from "lucide-react";
+
+export default function TaskItem({ task }) {
+  
+  const getStatusStyles = () => {
+    switch (task.status) {
+      case 'completed': return 'bg-green-100 border-green-300 opacity-75';
+      case 'cancelled': return 'bg-red-300 border-red-500 opacity-80';
+      default: return 'bg-white border-slate-300'; 
+    }
+  };
+
+  const getTextStyles = () => {
+    switch (task.status) {
+      case 'completed': return 'line-through text-green-700';
+      case 'cancelled': return 'line-through text-red-500';
+      default: return 'text-slate-700';
+    }
+  };
+
+  return (
+    <div className={`p-2 rounded-lg border-2 shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles()}`}>
+
+      <span className={`font-medium text-md break-words flex-1 mx-4 my-3 ${getTextStyles()}`}>
+        {task.name}
+      </span>
+
+      <div className="flex flex-col justify-between items-end">        
+        <button className="text-red-600 transition-all cursor-pointer opacity-0 group-hover:opacity-100 hover:scale-125">
+          <Trash2 size={18} />
+        </button>
+        <select 
+            defaultValue={task.status} 
+            className="text-xs bg-transparent border border-slate-300 rounded px-2 py-1 text-slate-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1">
+            <option value="pending">Pending</option>
+            <option value="completed">Done</option>
+            <option value="cancelled">Not Done</option>
+        </select>
+      </div>
+
+    </div>
+  );
 }
