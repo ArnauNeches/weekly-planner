@@ -1,7 +1,7 @@
 import { Trash2 } from "lucide-react";
 
-export default function TaskItem({ task, day, handleChangeStatus }) {
-  
+export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask }) {
+
   const getStatusStyles = () => {
     switch (task.status) {
       case 'completed': return 'bg-green-100 border-green-300 opacity-75';
@@ -26,12 +26,17 @@ export default function TaskItem({ task, day, handleChangeStatus }) {
       </span>
 
       <div className="flex flex-col justify-between items-end">        
-        <button className="text-red-600 transition-all cursor-pointer opacity-0 group-hover:opacity-100 hover:scale-125">
+        <button 
+        className="text-red-600 transition-all cursor-pointer opacity-0 group-hover:opacity-100 hover:scale-125"
+        onClick={()=>handleDeleteTask(day, task.id)}
+        >
           <Trash2 size={18} />
         </button>
         <select 
             defaultValue={task.status} 
-            className="text-xs bg-transparent border border-slate-300 rounded px-2 py-1 text-slate-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1">
+            className="text-xs bg-transparent border border-slate-300 rounded px-2 py-1 text-slate-500 cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1"
+            onChange={e=>handleChangeStatus(day, e.target.value, task.id)}
+            >
             <option value="pending">Pending</option>
             <option value="completed">Done</option>
             <option value="cancelled">Not Done</option>
