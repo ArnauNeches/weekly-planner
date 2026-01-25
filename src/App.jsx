@@ -1,8 +1,9 @@
+import { useState } from "react";
 import DayColumn from "./components/dayColumn"
 import {initialData, DAYS} from "./data/initialData"
 
 function App() {
-  const weekData = initialData;
+  const [weekData, setWeekData] = useState(initialData);
 
   return (
     <>

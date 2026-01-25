@@ -21,7 +21,7 @@ export default function TaskItem({ task }) {
   return (
     <div className={`p-2 rounded-lg border-2 shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles()}`}>
 
-      <span className={`font-medium text-md break-words flex-1 mx-4 my-3 ${getTextStyles()}`}>
+      <span className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles()}`}>
         {task.name}
       </span>
 

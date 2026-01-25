@@ -1,4 +1,5 @@
 import TaskItem from "./taskItem"
+import NewItem from "./newItem";
 
 export default function DayColumn({ children, tasks }) {
   // Capitalize first letter
@@ -10,8 +11,10 @@ export default function DayColumn({ children, tasks }) {
         <h3 className="font-bold text-xl text-slate-800">{title}</h3>
         <span className="text-sm text-slate-500 font-mono">{tasks.length}</span>
       </div>
-      
-      <div className="flex flex-col gap-2 min-h-[200px] lg:h-[200px] lg:overflow-y-auto">
+
+      <NewItem/>
+
+      <div className="flex flex-col gap-2 min-h-50 lg:h-60 lg:overflow-y-auto">
         {tasks.map((task) => (
           <TaskItem 
             key={task.id} 
