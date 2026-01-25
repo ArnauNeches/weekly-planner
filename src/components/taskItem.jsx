@@ -1,6 +1,6 @@
 import { Trash2 } from "lucide-react";
 
-export default function TaskItem({ task }) {
+export default function TaskItem({ task, day, handleChangeStatus }) {
   
   const getStatusStyles = () => {
     switch (task.status) {

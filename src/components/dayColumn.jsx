@@ -1,8 +1,10 @@
-import TaskItem from "./taskItem"
-import NewItem from "./newItem";
+import { useState } from "react";
+import TaskItem from "./taskItem";
+import {ListPlus} from "lucide-react";
 
-export default function DayColumn({ children, tasks }) {
-  // Capitalize first letter
+export default function DayColumn({ children, tasks, onNewTask, onChangeStatus}) {
+  const [newTask, setNewTask] = useState("");
+
   const title = children.charAt(0).toUpperCase() + children.slice(1);
 
   return (
@@ -12,13 +14,20 @@ export default function DayColumn({ children, tasks }) {
         <span className="text-sm text-slate-500 font-mono">{tasks.length}</span>
       </div>
 
-      <NewItem/>
+      <div className="bg-slate-100 p-2 rounded-xl hover:shadow-md flex justify-between items-start">
+        <input className="bg-slate-300 border border-black rounded-xl p-1" type="text" onChange={change=>setNewTask(change.target.value)}/>
+        <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" onClick={()=>onNewTask(children, newTask)}>
+          <ListPlus size={22} />
+        </button>
+      </div>
 
       <div className="flex flex-col gap-2 min-h-50 lg:h-60 lg:overflow-y-auto">
         {tasks.map((task) => (
           <TaskItem 
             key={task.id} 
             task={task} 
+            day={children}
+            handleChangeStatus={onChangeStatus}
           />
         ))}
       </div>
