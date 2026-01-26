@@ -1,7 +1,9 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function WeekNavigator({children, prevWeek, nextWeek}){
     return (
+      <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.5}}>
         <div className="flex items-center justify-between gap-4 bg-slate-100 border border-slate-200 rounded-lg px-4 py-2 w-full max-w-md transition hover:shadow-md">
           <button
             onClick={prevWeek}
@@ -23,5 +25,7 @@ export default function WeekNavigator({children, prevWeek, nextWeek}){
             <ArrowRight />
           </button>
         </div>
+      </motion.div>
+
     );
 }

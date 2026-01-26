@@ -28,7 +28,7 @@ export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTa
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} layoutId={task.id}>
       <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles()}`}>
 
         <span className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles()}`}>
