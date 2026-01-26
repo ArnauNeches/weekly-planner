@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { initialData } from "../data/initialData";
 
-export function useWeeklyPlanner() {
+export default function useWeeklyPlanner(currentWeek) {
 
     const [weekData, setWeekData] = useState(() => {
-        const storage = localStorage.getItem("weekly-planner-data");
+        const storage = localStorage.getItem(`week-${currentWeek.toLocaleDateString()}`);
         if (storage) return JSON.parse(storage);
         return initialData;
     }
@@ -13,7 +13,7 @@ export function useWeeklyPlanner() {
 
     useEffect(() => {
         const newData = JSON.stringify(weekData);
-        localStorage.setItem("weekly-planner-data", newData);
+        localStorage.setItem(`week-${currentWeek.toLocaleDateString()}`, newData);
     }, [weekData]);
 
     function deleteTask(day, id) {
