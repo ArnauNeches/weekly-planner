@@ -15,7 +15,8 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
       </div>
 
       <form 
-        onSubmit={()=>{
+        onSubmit={(e)=>{
+            e.preventDefault();
             if (!newTask.trim()) return;
             onNewTask(children, newTask);
             setNewTask("");
