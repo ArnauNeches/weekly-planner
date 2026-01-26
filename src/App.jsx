@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <h1 className="text-4xl text-white font-bold text-center">Weekly Planner</h1>
+      <h1 className="text-4xl text-slate-900 font-semibold text-center">Weekly Planner</h1>
 
       <div className="flex justify-center my-5">
         <WeekNavigator prevWeek={prevWeek} nextWeek={nextWeek}>

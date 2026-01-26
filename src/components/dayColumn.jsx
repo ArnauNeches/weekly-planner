@@ -9,8 +9,8 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
 
   return (
     <section className="w-full max-w-sm flex flex-col gap-4">
-      <div className="bg-slate-100 p-4 rounded-xl shadow-md flex justify-between items-center">
-        <h3 className="font-bold text-xl text-slate-800">{title}</h3>
+      <div className="bg-slate-100/60 border border-slate-200 hover:bg-slate-100 p-4 rounded-xl shadow-md flex justify-between items-center">
+        <h3 className="font-bold text-xl text-slate-900">{title}</h3>
         <span className="text-sm text-slate-500 font-mono">{tasks.length}</span>
       </div>
 
@@ -21,9 +21,9 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
             onNewTask(children, newTask);
             setNewTask("");
           }}
-        className="bg-slate-100 p-2 rounded-xl hover:shadow-md flex justify-between items-start"
+        className="bg-slate-100/60 border border-slate-200 hover:bg-slate-100 p-2 rounded-xl transition hover:shadow-md flex justify-between items-start"
       >
-        <input value={newTask} className="bg-slate-300 border border-black rounded-xl p-1" type="text" onChange={e=>setNewTask(e.target.value)}/>
+        <input value={newTask} className="bg-white border border-black rounded-xl p-1" type="text" onChange={e=>setNewTask(e.target.value)}/>
         <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" type="submit">
           <ListPlus size={22} />
         </button>
