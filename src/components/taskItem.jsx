@@ -1,37 +1,37 @@
 import { motion } from "motion/react";
 import { Trash2 } from "lucide-react";
 
+const getStatusStyles = (stat) => {
+  switch (stat) {
+    case 'completed': return 'bg-emerald-50 border-emerald-200';
+    case 'cancelled': return 'bg-rose-50 border-rose-200';
+    default: return 'bg-white border-slate-200';
+  }
+};
+
+const getTextStyles = (stat) => {
+  switch (stat) {
+    case 'completed': return 'line-through text-emerald-400';
+    case 'cancelled': return 'line-through text-rose-400';
+    default: return 'text-slate-800';
+  }
+};
+
+const getSelectorTextStyles = (stat) => {
+  switch (stat) {
+    case 'completed': return 'text-emerald-400';
+    case 'cancelled': return 'text-rose-400';
+    default: return 'text-slate-700';
+  }
+};
+
 export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask }) {
-
-  const getStatusStyles = () => {
-    switch (task.status) {
-      case 'completed': return 'bg-emerald-50 border-emerald-200';
-      case 'cancelled': return 'bg-rose-50 border-rose-200';
-      default: return 'bg-white border-slate-200';
-    }
-  };
-
-  const getTextStyles = () => {
-    switch (task.status) {
-      case 'completed': return 'line-through text-emerald-400';
-      case 'cancelled': return 'line-through text-rose-400';
-      default: return 'text-slate-800';
-    }
-  };
-
-  const getSelectorTextStyles = () => {
-    switch (task.status) {
-      case 'completed': return 'text-emerald-400';
-      case 'cancelled': return 'text-rose-400';
-      default: return 'text-slate-700';
-    }
-  };
 
   return (
     <motion.div layout whileTap={{ scale: 0.95 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} layoutId={task.id}>
-      <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles()}`}>
+      <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles(task.status)}`}>
 
-        <span className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles()}`}>
+        <span className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles(task.status)}`}>
           {task.name}
         </span>
 
@@ -44,7 +44,7 @@ export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTa
           </button>
           <select
             defaultValue={task.status}
-            className={`text-xs bg-white border border-slate-300 rounded px-2 py-1 ${getSelectorTextStyles()} cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1`}
+            className={`text-xs bg-white border border-slate-300 rounded px-2 py-1 ${getSelectorTextStyles(task.status)} cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1`}
             onChange={e => handleChangeStatus(day, e.target.value, task.id)}
           >
             <option className="text-slate-700" value="pending">Pending</option>
