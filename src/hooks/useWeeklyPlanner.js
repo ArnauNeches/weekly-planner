@@ -67,7 +67,26 @@ export default function useWeeklyPlanner(currentWeek) {
         });
     }
 
+    function handleDragEnd(event){
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
 
+        setWeekData((prev) => {
+            const activeDay = Object.keys(prev).find((day) =>
+            prev[day].some((task) => task.id === active.id)
+            );
+
+            if (!activeDay) return prev;
+
+            const oldIndex = prev[activeDay].findIndex((task) => task.id === active.id);
+            const newIndex = prev[activeDay].findIndex((task) => task.id === over.id);
+
+            return {
+            ...prev,
+            [activeDay]: arrayMove(prev[activeDay], oldIndex, newIndex),
+            };
+        });
+    }
 
     return {weekData, addTask, changeStatus, deleteTask, handleDragEnd}
 }
