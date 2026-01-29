@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { initialData } from "../data/initialData";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export default function useWeeklyPlanner(currentWeek) {
 
@@ -66,5 +67,7 @@ export default function useWeeklyPlanner(currentWeek) {
         });
     }
 
-    return {weekData, addTask, changeStatus, deleteTask}
+
+
+    return {weekData, addTask, changeStatus, deleteTask, handleDragEnd}
 }
