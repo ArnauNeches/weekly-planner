@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { initialData } from "../data/initialData";
-import { arrayMove } from "@dnd-kit/sortable";
 
 export default function useWeeklyPlanner(currentWeek) {
 
@@ -67,26 +66,6 @@ export default function useWeeklyPlanner(currentWeek) {
         });
     }
 
-    function handleDragEnd(event){
-        const { active, over } = event;
-        if (!over || active.id === over.id) return;
+    return {weekData, addTask, changeStatus, deleteTask}
 
-        setWeekData((prev) => {
-            const activeDay = Object.keys(prev).find((day) =>
-            prev[day].some((task) => task.id === active.id)
-            );
-
-            if (!activeDay) return prev;
-
-            const oldIndex = prev[activeDay].findIndex((task) => task.id === active.id);
-            const newIndex = prev[activeDay].findIndex((task) => task.id === over.id);
-
-            return {
-            ...prev,
-            [activeDay]: arrayMove(prev[activeDay], oldIndex, newIndex),
-            };
-        });
-    }
-
-    return {weekData, addTask, changeStatus, deleteTask, handleDragEnd}
 }

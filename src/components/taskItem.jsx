@@ -28,7 +28,7 @@ const getSelectorTextStyles = (stat) => {
 export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask }) {
 
   return (
-    <motion.div layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} layoutId={task.id}>
+    <motion.div layout whileTap={{ scale: 0.95 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} layoutId={task.id}>
       <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles(task.status)}`}>
 
         <span className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles(task.status)}`}>
