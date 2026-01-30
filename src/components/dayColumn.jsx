@@ -2,6 +2,7 @@ import { useState } from "react";
 import TaskItem from "./taskItem";
 import { ListPlus } from "lucide-react";
 import { AnimatePresence } from "motion/react";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask }) {
   const [newTask, setNewTask] = useState("");
@@ -29,20 +30,21 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
           <ListPlus size={22} />
         </button>
       </form>
-
-      <div className="flex flex-col gap-2 min-h-20 lg:min-h-50 lg:h-60 lg:overflow-y-auto">
-        <AnimatePresence>
-          {tasks.map((task) => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              day={children}
-              handleChangeStatus={onChangeStatus}
-              handleDeleteTask={onDeleteTask}
-            />
-          ))}
-        </AnimatePresence>
-      </div>
+      <SortableContext items={tasks.map(task=>task.id)} strategy={verticalListSortingStrategy}>
+        <div className="flex flex-col gap-2 min-h-20 lg:min-h-50 lg:h-60 lg:overflow-y-auto">
+          <AnimatePresence>
+            {tasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                day={children}
+                handleChangeStatus={onChangeStatus}
+                handleDeleteTask={onDeleteTask}
+              />
+            ))}
+          </AnimatePresence>
+        </div>
+      </SortableContext>
     </section>
   );
 }
