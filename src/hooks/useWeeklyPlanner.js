@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { initialData, DAYS } from "../data/initialData";
 import { arrayMove } from "@dnd-kit/sortable";
+import { saveWeek, getWeek } from "../services/storage";
 
 export default function useWeeklyPlanner(currentWeek) {
 
@@ -15,15 +16,12 @@ export default function useWeeklyPlanner(currentWeek) {
 
     const [activeId, setActiveId] = useState(null);
     const [weekData, setWeekData] = useState(() => {
-        const storage = localStorage.getItem(`week-${currentWeek.toLocaleDateString()}`);
-        if (storage) return JSON.parse(storage);
-        return initialData;
+        return getWeek(`week-${currentWeek.toLocaleDateString()}`);
     }
     );
 
     useEffect(() => {
-        const newData = JSON.stringify(weekData);
-        localStorage.setItem(`week-${currentWeek.toLocaleDateString()}`, newData);
+        saveWeek(`week-${currentWeek.toLocaleDateString()}`, weekData)
     }, [weekData]);
 
     function deleteTask(day, id) {
