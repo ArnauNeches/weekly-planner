@@ -20,7 +20,7 @@ export default function PlannerBoard({ currentWeek }) {
           {DAYS.map(day => (
             <DayColumn
               key={day} 
-              tasks={weekData[day].filter((t)=>t.id !== activeId) || []} 
+              tasks={weekData[day] || []} 
               onNewTask={addTask} 
               onChangeStatus={changeStatus} 
               onDeleteTask={deleteTask}
