@@ -27,7 +27,7 @@ const getSelectorTextStyles = (stat) => {
   }
 };
 
-export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask }) { 
+export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask, handleEditTask }) { 
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: task.id});
   const style = { transform: CSS.Transform.toString(transform), transition };
 

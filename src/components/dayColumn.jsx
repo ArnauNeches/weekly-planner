@@ -3,14 +3,18 @@ import TaskItem from "./taskItem";
 import { ListPlus } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
 
-export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask }) {
+export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask, onEditTask }) {
   const [newTask, setNewTask] = useState("");
-
   const title = children.charAt(0).toUpperCase() + children.slice(1);
 
+  const { setNodeRef } = useDroppable({ 
+    id: children, 
+  });
+
   return (
-    <section className="w-full max-w-sm flex flex-col gap-4">
+    <section ref={setNodeRef} className="w-full max-w-sm flex flex-col gap-4">
       <div className="bg-slate-100/60 border border-slate-200 hover:bg-slate-100 p-4 rounded-xl shadow-md flex justify-between items-center">
         <h3 className="font-bold text-xl text-slate-900">{title}</h3>
         <span className="text-sm text-slate-500 font-mono">{tasks.length}</span>
@@ -40,6 +44,7 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
                 day={children}
                 handleChangeStatus={onChangeStatus}
                 handleDeleteTask={onDeleteTask}
+                handleEditTask={onEditTask}
               />
             ))}
           </AnimatePresence>
