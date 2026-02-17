@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import { motion } from "motion/react";
 import { Trash2, SquarePen } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
@@ -28,21 +29,62 @@ const getSelectorTextStyles = (stat) => {
 };
 
 export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask, handleEditTask }) { 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(task.name);
+  const inputRef = useRef(null);
+
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: task.id});
   const style = { transform: CSS.Transform.toString(transform), transition };
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) inputRef.current.focus();
+  }, [isEditing]);  
+
+  const onSave = () => {
+    if (editValue.trim()) {
+        handleEditTask(day, task.id, editValue);
+    } else {
+        setEditValue(task.name); // Revert if empty
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") onSave();
+    if (e.key === "Escape") {
+        setEditValue(task.name);
+        setIsEditing(false);
+    }
+  };
 
   return (
     <motion.div ref={setNodeRef} style={style} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles(task.status)}`}>
 
-        <span {...listeners} {...attributes} className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles(task.status)}`}>
-          {task.name}
-        </span>
+        {isEditing ? (
+            <input 
+                ref={inputRef}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onBlur={onSave}
+                onKeyDown={handleKeyDown}
+                className="flex-1 mx-4 my-3 bg-white border border-blue-400 rounded px-2 outline-none text-slate-800"
+            />
+          ) : (
+            <span 
+                {...listeners} 
+                {...attributes} 
+                className={`font-medium text-md wrap-break-word flex-1 mx-4 my-3 ${getTextStyles(task.status)}`}
+            >
+                {task.name}
+            </span>
+          )}
 
         <div className="flex flex-col justify-between items-end">
           <div className="flex gap-2">
             <button
               className="text-black transition-all cursor-pointer lg:opacity-0 group-hover:opacity-100 hover:scale-125"
+              onClick={()=> setIsEditing(true)}
             >
               <SquarePen size={18}/>
             </button>
