@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Trash2 } from "lucide-react";
+import { Trash2, SquarePen } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -27,7 +27,7 @@ const getSelectorTextStyles = (stat) => {
   }
 };
 
-export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask }) { 
+export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask, handleEditTask }) { 
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: task.id});
   const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -40,12 +40,19 @@ export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTa
         </span>
 
         <div className="flex flex-col justify-between items-end">
-          <button
-            className="text-red-600 transition-all cursor-pointer lg:opacity-0 group-hover:opacity-100 hover:scale-125"
-            onClick={() => handleDeleteTask(day, task.id)}
-          >
-            <Trash2 size={18} />
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="text-black transition-all cursor-pointer lg:opacity-0 group-hover:opacity-100 hover:scale-125"
+            >
+              <SquarePen size={18}/>
+            </button>
+            <button
+              className="text-red-600 transition-all cursor-pointer lg:opacity-0 group-hover:opacity-100 hover:scale-125"
+              onClick={() => handleDeleteTask(day, task.id)}
+            >
+              <Trash2 size={18} />
+            </button>
+          </div>
           <select
             defaultValue={task.status}
             className={`text-xs bg-white border border-slate-300 rounded px-2 py-1 ${getSelectorTextStyles(task.status)} cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1`}
