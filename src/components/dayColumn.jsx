@@ -1,17 +1,15 @@
-import { useState } from "react";
 import TaskItem from "./taskItem";
 import { ListPlus } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
+import useInputTask from "../hooks/useInputTask";
 
 export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask, onEditTask }) {
-  const [newTask, setNewTask] = useState("");
+  const {newTask, errorMessage, handleNewInputTask, resetInputTask, resetErrorMessage, setInvalidErrorMessage} = useInputTask();
   const title = children.charAt(0).toUpperCase() + children.slice(1);
 
-  const { setNodeRef } = useDroppable({ 
-    id: children, 
-  });
+  const { setNodeRef } = useDroppable({ id: children, });
 
   return (
     <section ref={setNodeRef} className="w-full max-w-sm flex flex-col gap-4">
@@ -23,13 +21,18 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!newTask.trim()) return;
+          if (!newTask.trim()) {
+            setInvalidErrorMessage();
+            return;
+          }
+          resetErrorMessage();
           onNewTask(children, newTask);
-          setNewTask("");
+          resetInputTask();
         }}
-        className="bg-slate-100/60 border border-slate-200 hover:bg-slate-100 p-2 rounded-xl transition hover:shadow-md flex justify-between items-start"
+        className="bg-slate-100/60 border border-slate-200 hover:bg-slate-100 p-2 rounded-xl transition hover:shadow-md flex justify-between items-center"
       >
-        <input value={newTask} className="bg-white border border-black rounded-xl p-1" type="text" onChange={e => setNewTask(e.target.value)} />
+        <input value={newTask} className="bg-white border border-black rounded-xl p-1" type="text" onChange={handleNewInputTask} onBlur={resetErrorMessage}/>
+        {errorMessage && <span className="text-rose-500">{errorMessage}</span>}
         <button className="text-black transition-all cursor-pointer hover:scale-125 pt-1" type="submit">
           <ListPlus size={22} />
         </button>
