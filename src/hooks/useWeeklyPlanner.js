@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
-import { initialData, DAYS } from "../data/initialData";
+import { DAYS } from "../data/initialData";
 import { arrayMove } from "@dnd-kit/sortable";
 import { saveWeek, getWeek } from "../services/storage";
 
@@ -97,12 +97,12 @@ export default function useWeeklyPlanner(currentWeek) {
 
     function handleDragOver(event) {
         const { active, over } = event;
-        const overId = over?.id;
+        const overId = over.id;
 
         if (!overId || active.id === overId) return;
 
         const activeContainer = findContainer(active.id);
-        const overContainer = findContainer(overId);
+        const overContainer = DAYS.includes(overId.toLowerCase()) ? overId.toLowerCase() : findContainer(overId);
 
         if (!activeContainer || !overContainer || activeContainer === overContainer) {
             return;
