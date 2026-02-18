@@ -5,7 +5,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useDroppable } from "@dnd-kit/core";
 import useInputTask from "../hooks/useInputTask";
 
-export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask, onEditTask }) {
+export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask, onEditTask, activeId }) {
   const {newTask, errorMessage, handleNewInputTask, resetInputTask, resetErrorMessage, setInvalidErrorMessage} = useInputTask();
   const title = children.charAt(0).toUpperCase() + children.slice(1);
 
@@ -48,6 +48,7 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
                 handleChangeStatus={onChangeStatus}
                 handleDeleteTask={onDeleteTask}
                 handleEditTask={onEditTask}
+                activeId={activeId}
               />
             ))}
           </AnimatePresence>

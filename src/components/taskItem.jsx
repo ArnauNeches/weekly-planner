@@ -28,14 +28,14 @@ const getSelectorTextStyles = (stat) => {
   }
 };
 
-export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask, handleEditTask }) { 
+export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTask, handleEditTask, activeId }) { 
   const {isEditing, editValue, inputRef, onSave, handleKeyDown, handleInputChange, handleClickEdit} = useEditLogic(handleEditTask, task, day);
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: task.id});
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <motion.div ref={setNodeRef} style={style} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles(task.status)}`}>
+      <div className={`p-2 rounded-lg border shadow-sm flex gap-2 group transition-all hover:shadow-lg ${getStatusStyles(task.status)} ${task.id === activeId && "opacity-25"}`}>
 
         {isEditing ? (
             <input 

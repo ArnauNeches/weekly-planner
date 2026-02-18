@@ -25,6 +25,7 @@ export default function PlannerBoard({ currentWeek }) {
               onChangeStatus={changeStatus} 
               onDeleteTask={deleteTask}
               onEditTask={editTask}
+              activeId={activeId}
             >
               {day.toUpperCase()}
             </DayColumn>
