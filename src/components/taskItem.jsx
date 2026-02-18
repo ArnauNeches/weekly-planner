@@ -44,7 +44,7 @@ export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTa
                 onChange={handleInputChange}
                 onBlur={onSave}
                 onKeyDown={handleKeyDown}
-                className="flex-1 mx-4 my-3 bg-white border border-blue-400 rounded px-2 outline-none text-slate-800"
+                className="flex-1 mx-4 my-3 bg-white border border-blue-400 rounded outline-none text-slate-800"
             />
           ) : (
             <span 
