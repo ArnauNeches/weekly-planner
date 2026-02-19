@@ -71,7 +71,6 @@ export default function useWeeklyPlanner(currentWeek) {
                 id: uuidv4(),
                 name: text,
                 status: 'pending',
-                createdAt: new Date().toLocaleDateString()
             }
 
             return ({
