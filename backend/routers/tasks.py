@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models.task import Task
-from schemas.task import TaskCreate
+from schemas.task import TaskCreate, TaskUpdate, WeeklyPlannerResponse
 from uuid import UUID
 from datetime import date, timedelta
 
@@ -48,7 +48,25 @@ def delete_task(task_id: UUID, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-@router.get("/week/{monday_date}")
+@router.patch("/{task_id}")
+def update_task(task_id: UUID, task_data: TaskUpdate, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    update_data = task_data.model_dump(exclude_unset=True)
+    
+    for key, value in update_data.items():
+        setattr(task, key, value)
+    
+    db.commit()
+    db.refresh(task)
+
+    return task
+
+
+@router.get("/week/{monday_date}", response_model=WeeklyPlannerResponse)
 def get_week(monday_date: date, db: Session = Depends(get_db)):
     sunday_date = monday_date + timedelta(days=6)
     
