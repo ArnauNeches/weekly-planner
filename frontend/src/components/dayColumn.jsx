@@ -4,11 +4,12 @@ import { AnimatePresence } from "motion/react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import useInputTask from "../hooks/useInputTask";
+import { useDate } from "../context/DateContext"
 
 export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, onDeleteTask, onEditTask, activeId }) {
   const {newTask, errorMessage, handleNewInputTask, resetInputTask, resetErrorMessage, setInvalidErrorMessage} = useInputTask();
   const title = children.charAt(0).toUpperCase() + children.slice(1);
-
+  const { currentWeek } = useDate();
   const { setNodeRef } = useDroppable({ id: children, });
 
   return (
@@ -26,7 +27,7 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
             return;
           }
           resetErrorMessage();
-          onNewTask(children, newTask);
+          onNewTask(currentWeek, children, newTask);
           resetInputTask();
         }}
         className="bg-slate-100/60 border border-slate-200 hover:bg-slate-100 p-2 rounded-xl transition hover:shadow-md flex justify-between items-center"

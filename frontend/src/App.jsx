@@ -2,12 +2,12 @@ import WeekNavigator from "./components/weekNavigator";
 import useDateLogic from "./hooks/useDateLogic";
 import PlannerBoard from "./components/plannerBoard"; 
 import { motion, AnimatePresence } from "motion/react";
+import { DateProvider } from "./context/DateContext";
 
 function App() {
-  const { currentWeek, prevWeek, nextWeek, getNextSunday } = useDateLogic();
 
   return (
-    <>
+    <DateProvider>
       <motion.h1 
         className="text-4xl text-slate-900 font-semibold text-center mb-2"
         initial={{ opacity: 0}}
@@ -18,17 +18,13 @@ function App() {
       </motion.h1>
 
       <div className="flex justify-center my-5">
-        <WeekNavigator prevWeek={prevWeek} nextWeek={nextWeek}>
-          {`${currentWeek.toLocaleDateString()} – ${getNextSunday(currentWeek).toLocaleDateString()}`}
-        </WeekNavigator>
+        <WeekNavigator/>
       </div>
+
       <AnimatePresence mode="wait">
-        <PlannerBoard 
-          key={currentWeek.toLocaleDateString()} 
-          currentWeek={currentWeek} 
-        />
+        <PlannerBoard/>
       </AnimatePresence>
-    </>
+    </DateProvider>
   );
 }
 

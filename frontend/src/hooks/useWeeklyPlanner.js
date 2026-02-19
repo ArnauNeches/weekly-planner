@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
-import { DAYS } from "../data/initialData";
+import { DAYS, initialData } from "../data/initialData";
 import { arrayMove } from "@dnd-kit/sortable";
-import { saveWeek, getWeek } from "../services/storage";
+import { getWeekAPI, deleteTaskAPI, addTaskAPI, updateTaskAPI } from "../services/api";
 
 export default function useWeeklyPlanner(currentWeek) {
+
+    const daysMap = Object.fromEntries(
+        DAYS.map((name, index) => [name, index])
+    );
 
     function findActiveTask(id) {
         for (const day of DAYS){
@@ -15,72 +19,118 @@ export default function useWeeklyPlanner(currentWeek) {
     }
 
     const [activeId, setActiveId] = useState(null);
-    const [weekData, setWeekData] = useState(() => {
-        return getWeek(`week-${currentWeek.toLocaleDateString()}`);
-    }
-    );
+    const [weekData, setWeekData] = useState(initialData);
 
     useEffect(() => {
-        saveWeek(`week-${currentWeek.toLocaleDateString()}`, weekData)
-    }, [weekData]);
+        const dateKey = currentWeek.toLocaleDateString('fr-CA');
+        
+        async function loadWeek() {
+            try {
+                const data = await getWeekAPI(dateKey);
+                setWeekData(data);
+            } catch (error) {
+                console.error("Error loading week: ", error);
+            }
+        }
 
-    function deleteTask(day, id) {
-        const dayKey = day.toLowerCase();
+        loadWeek();
+    }, [currentWeek]);
 
-        setWeekData(prevWeekData => {
-            return ({
-                ...prevWeekData,
-                [dayKey]: [
-                    ...prevWeekData[dayKey].filter(task => task.id !== id)
-                ]
-            })
-        });
-    }
+    async function deleteTask(day, id) {
 
-    function editTask(day, id, newName) {
-        const dayKey = day.toLowerCase();
-        setWeekData(prev => ({
-            ...prev, 
-            [dayKey]: prev[dayKey].map(task =>
-                task.id === id ? {...task, name: newName} : task
-            )
-        }));
-    }
+        try {
+            await deleteTaskAPI(id);
 
-    function changeStatus(day, newStatus, id) {
-        const dayKey = day.toLowerCase();
-
-        setWeekData(prev => {
-            const dayTasks = prev[dayKey];
-            const updatedTasks = dayTasks.map(task => {
-                if (task.id == id) return { ...task, status: newStatus };
-                return task;
+            setWeekData(prevWeekData => {
+                return ({
+                    ...prevWeekData,
+                    [day]: [
+                        ...prevWeekData[day].filter(task => task.id !== id)
+                    ]
+                })
             });
 
-            return {
-                ...prev,
-                [dayKey]: updatedTasks
-            };
-        });
+        } catch (error) {
+            console.error("Failed to delete task", error);
+        }
     }
 
-    function addTask(day, text) {
+    async function editTask(day, id, newName) {
 
-        setWeekData(prevWeekData => {
-            const newEntry = {
-                id: uuidv4(),
-                name: text,
-                status: 'pending',
-            }
+        const update = {
+            name: newName
+        };
 
-            return ({
-                ...prevWeekData,
-                [day.toLowerCase()]: [
-                    ...prevWeekData[day.toLowerCase()],
-                    newEntry
-                ]
-            })
-        });
+        try {
+            await updateTaskAPI(id, update);
+
+            setWeekData(prev => ({
+                ...prev, 
+                [day]: prev[day].map(task =>
+                    task.id === id ? {...task, name: newName} : task
+                )
+            }));
+
+        } catch (error) {
+            console.error("Failed to update name: ", error);
+        }
+        
+    }
+
+    async function changeStatus(day, newStatus, id) {
+        
+        const update = {
+            status: newStatus
+        };
+
+        try {
+            await updateTaskAPI(id, update)
+
+            setWeekData(prev => {
+                const dayTasks = prev[day];
+                const updatedTasks = dayTasks.map(task => {
+                    if (task.id == id) return { ...task, status: newStatus };
+                    return task;
+                });
+
+                return {
+                    ...prev,
+                    [day]: updatedTasks
+                };
+            });
+        } catch (error) {
+            console.error("Failed to update status: ", error);
+        }
+
+    }
+
+    async function addTask(week, day, text) {
+        
+        const newDate = new Date(week);
+        newDate.setDate(newDate.getDate() + daysMap[day]);
+
+        const newEntry = {
+            id: uuidv4(),
+            name: text,
+            assigned_date: newDate.toLocaleDateString('fr-CA')
+        }
+
+        try {
+            await addTaskAPI(newEntry);
+
+            setWeekData(prevWeekData => {
+                return ({
+                    ...prevWeekData,
+                    [day.toLowerCase()]: [
+                        ...prevWeekData[day.toLowerCase()],
+                        newEntry
+                    ]
+                })
+            });
+
+        } catch (error) {
+            console.error("Failed to create new task: ", error);
+        }
     }
 
     function findContainer(id) {

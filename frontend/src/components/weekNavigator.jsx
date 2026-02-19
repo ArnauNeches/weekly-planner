@@ -1,7 +1,10 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
+import { useDate } from "../context/DateContext";
 
-export default function WeekNavigator({children, prevWeek, nextWeek}){
+export default function WeekNavigator(){
+    const { prevWeek, nextWeek, currentWeek, getNextSunday } = useDate();
+
     return (
       <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.5}}>
         <div className="flex items-center justify-between gap-4 bg-slate-100 border border-slate-200 rounded-lg px-4 py-2 w-full max-w-md transition hover:shadow-md">
@@ -14,7 +17,7 @@ export default function WeekNavigator({children, prevWeek, nextWeek}){
           </button>
 
           <h3 className="text-md font-medium text-slate-800 text-center whitespace-nowrap">
-            {children}
+            {`${currentWeek.toLocaleDateString()} – ${getNextSunday(currentWeek).toLocaleDateString()}`}
           </h3>
 
           <button

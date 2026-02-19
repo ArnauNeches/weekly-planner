@@ -4,10 +4,12 @@ import useWeeklyPlanner from "../hooks/useWeeklyPlanner";
 import { motion } from "motion/react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import TaskItem from "./taskItem";
+import { useDate } from "../context/DateContext";
 
-export default function PlannerBoard({ currentWeek }) {
+export default function PlannerBoard() {
+  const { currentWeek } = useDate();
   const { weekData, activeId, addTask, deleteTask, editTask, changeStatus, handleDragOver, handleDragStart, handleDragEnd, findActiveTask } = useWeeklyPlanner(currentWeek);
-
+  
   return (
     <DndContext 
       onDragStart={handleDragStart} 
@@ -27,7 +29,7 @@ export default function PlannerBoard({ currentWeek }) {
               onEditTask={editTask}
               activeId={activeId}
             >
-              {day.toUpperCase()}
+              {day}
             </DayColumn>
           ))}
         </div>
