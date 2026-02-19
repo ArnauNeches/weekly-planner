@@ -23,3 +23,13 @@ export async function addTaskAPI(newEntry){
         }
     });
 }
+
+export async function updateTaskAPI(taskId, updates){
+    await fetch(`/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates) 
+    });
+}

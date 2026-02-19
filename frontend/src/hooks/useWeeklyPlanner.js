@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { DAYS, initialData } from "../data/initialData";
 import { arrayMove } from "@dnd-kit/sortable";
-import { saveWeek, getWeekAPI, deleteTaskAPI, addTaskAPI } from "../services/api";
+import { getWeekAPI, deleteTaskAPI, addTaskAPI, updateTaskAPI } from "../services/api";
 
 export default function useWeeklyPlanner(currentWeek) {
 
@@ -37,7 +37,6 @@ export default function useWeeklyPlanner(currentWeek) {
     }, [currentWeek]);
 
     async function deleteTask(day, id) {
-        const dayKey = day;
 
         try {
             await deleteTaskAPI(id);
@@ -45,8 +44,8 @@ export default function useWeeklyPlanner(currentWeek) {
             setWeekData(prevWeekData => {
                 return ({
                     ...prevWeekData,
-                    [dayKey]: [
-                        ...prevWeekData[dayKey].filter(task => task.id !== id)
+                    [day]: [
+                        ...prevWeekData[day].filter(task => task.id !== id)
                     ]
                 })
             });
@@ -56,31 +55,53 @@ export default function useWeeklyPlanner(currentWeek) {
         }
     }
 
-    function editTask(day, id, newName) {
-        const dayKey = day.toLowerCase();
-        setWeekData(prev => ({
-            ...prev, 
-            [dayKey]: prev[dayKey].map(task =>
-                task.id === id ? {...task, name: newName} : task
-            )
-        }));
+    async function editTask(day, id, newName) {
+
+        const update = {
+            name: newName
+        };
+
+        try {
+            await updateTaskAPI(id, update);
+
+            setWeekData(prev => ({
+                ...prev, 
+                [day]: prev[day].map(task =>
+                    task.id === id ? {...task, name: newName} : task
+                )
+            }));
+
+        } catch (error) {
+            console.error("Failed to update name: ", error);
+        }
+        
     }
 
-    function changeStatus(day, newStatus, id) {
-        const dayKey = day.toLowerCase();
+    async function changeStatus(day, newStatus, id) {
+        
+        const update = {
+            status: newStatus
+        };
 
-        setWeekData(prev => {
-            const dayTasks = prev[dayKey];
-            const updatedTasks = dayTasks.map(task => {
-                if (task.id == id) return { ...task, status: newStatus };
-                return task;
+        try {
+            await updateTaskAPI(id, update)
+
+            setWeekData(prev => {
+                const dayTasks = prev[day];
+                const updatedTasks = dayTasks.map(task => {
+                    if (task.id == id) return { ...task, status: newStatus };
+                    return task;
+                });
+
+                return {
+                    ...prev,
+                    [day]: updatedTasks
+                };
             });
+        } catch (error) {
+            console.error("Failed to update status: ", error);
+        }
 
-            return {
-                ...prev,
-                [dayKey]: updatedTasks
-            };
-        });
     }
 
     async function addTask(week, day, text) {
