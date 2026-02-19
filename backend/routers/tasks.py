@@ -4,6 +4,9 @@ from database import get_db
 from models.task import Task
 from schemas.task import TaskCreate
 from uuid import UUID
+from datetime import date, timedelta
+
+days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -44,3 +47,29 @@ def delete_task(task_id: UUID, db: Session = Depends(get_db)):
 
     db.commit()
     return None
+
+@router.get("/week/{monday_date}")
+def get_week(monday_date: date, db: Session = Depends(get_db)):
+    sunday_date = monday_date + timedelta(days=6)
+    
+    tasks = db.query(Task).filter(
+        Task.assigned_date >= monday_date,
+        Task.assigned_date <= sunday_date
+    ).order_by(
+        Task.assigned_date.asc(),
+        Task.position.asc()
+    ).all()
+
+    response = {day: [] for day in days}
+
+    days_map = {i: name for i, name in enumerate(days)}
+
+    for t in tasks:
+        day_name = days_map[t.assigned_date.weekday()]
+        response[day_name].append({
+            "id": t.id,
+            "name": t.name,
+            "status": t.status
+        })
+    
+    return response
