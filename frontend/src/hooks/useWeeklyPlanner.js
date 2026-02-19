@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
-import { DAYS } from "../data/initialData";
+import { DAYS, initialData } from "../data/initialData";
 import { arrayMove } from "@dnd-kit/sortable";
-import { saveWeek, getWeek } from "../services/storage";
+import { saveWeek, getWeekAPI, deleteTaskAPI, addTaskAPI } from "../services/api";
 
 export default function useWeeklyPlanner(currentWeek) {
 
@@ -15,26 +15,41 @@ export default function useWeeklyPlanner(currentWeek) {
     }
 
     const [activeId, setActiveId] = useState(null);
-    const [weekData, setWeekData] = useState(() => {
-        return getWeek(`week-${currentWeek.toLocaleDateString()}`);
-    }
-    );
+    const [weekData, setWeekData] = useState(initialData);
 
     useEffect(() => {
-        saveWeek(`week-${currentWeek.toLocaleDateString()}`, weekData)
-    }, [weekData]);
+        const dateKey = currentWeek.toLocaleDateString('fr-CA');
+        
+        async function loadWeek() {
+            try {
+                const data = await getWeekAPI(dateKey);
+                setWeekData(data);
+            } catch (error) {
+                console.error("Error loading week: ", error);
+            }
+        }
 
-    function deleteTask(day, id) {
+        loadWeek();
+    }, [currentWeek]);
+
+    async function deleteTask(day, id) {
         const dayKey = day.toLowerCase();
 
-        setWeekData(prevWeekData => {
-            return ({
-                ...prevWeekData,
-                [dayKey]: [
-                    ...prevWeekData[dayKey].filter(task => task.id !== id)
-                ]
-            })
-        });
+        try {
+            await deleteTaskAPI(id);
+
+            setWeekData(prevWeekData => {
+                return ({
+                    ...prevWeekData,
+                    [dayKey]: [
+                        ...prevWeekData[dayKey].filter(task => task.id !== id)
+                    ]
+                })
+            });
+
+        } catch (error) {
+            console.error("Failed to delete task", error);
+        }
     }
 
     function editTask(day, id, newName) {
@@ -64,23 +79,28 @@ export default function useWeeklyPlanner(currentWeek) {
         });
     }
 
-    function addTask(day, text) {
+    async function addTask(day, text) {
+        const newEntry = {
+            id: uuidv4(),
+            name: text,
+        }
 
-        setWeekData(prevWeekData => {
-            const newEntry = {
-                id: uuidv4(),
-                name: text,
-                status: 'pending',
-            }
+        try {
+            await addTaskAPI(newEntry);
 
-            return ({
-                ...prevWeekData,
-                [day.toLowerCase()]: [
-                    ...prevWeekData[day.toLowerCase()],
-                    newEntry
-                ]
-            })
-        });
+            setWeekData(prevWeekData => {
+                return ({
+                    ...prevWeekData,
+                    [day.toLowerCase()]: [
+                        ...prevWeekData[day.toLowerCase()],
+                        newEntry
+                    ]
+                })
+            });
+
+        } catch (error) {
+            console.error("Failed to create new task: ", error);
+        }
     }
 
     function findContainer(id) {
