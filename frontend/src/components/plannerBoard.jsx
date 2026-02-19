@@ -29,7 +29,7 @@ export default function PlannerBoard() {
               onEditTask={editTask}
               activeId={activeId}
             >
-              {day.toUpperCase()}
+              {day}
             </DayColumn>
           ))}
         </div>

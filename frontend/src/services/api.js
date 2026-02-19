@@ -1,5 +1,3 @@
-import { initialData } from "../data/initialData";
-
 export function saveWeek(dateKey, data){
     localStorage.setItem(dateKey, JSON.stringify(data));
 };
@@ -19,6 +17,9 @@ export async function deleteTaskAPI(taskId){
 export async function addTaskAPI(newEntry){
     await fetch(`/api/tasks/`, {
         method: 'POST',
-        body: JSON.stringify(newEntry)
+        body: JSON.stringify(newEntry),
+        headers: {
+            'Content-Type': 'application/json'
+        }
     });
 }

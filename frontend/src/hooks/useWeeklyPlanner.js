@@ -6,6 +6,10 @@ import { saveWeek, getWeekAPI, deleteTaskAPI, addTaskAPI } from "../services/api
 
 export default function useWeeklyPlanner(currentWeek) {
 
+    const daysMap = Object.fromEntries(
+        DAYS.map((name, index) => [name, index])
+    );
+
     function findActiveTask(id) {
         for (const day of DAYS){
             const task = weekData[day]?.find(t => t.id === id);
@@ -33,7 +37,7 @@ export default function useWeeklyPlanner(currentWeek) {
     }, [currentWeek]);
 
     async function deleteTask(day, id) {
-        const dayKey = day.toLowerCase();
+        const dayKey = day;
 
         try {
             await deleteTaskAPI(id);
@@ -79,10 +83,15 @@ export default function useWeeklyPlanner(currentWeek) {
         });
     }
 
-    async function addTask(day, text) {
+    async function addTask(week, day, text) {
+        
+        const newDate = new Date(week);
+        newDate.setDate(newDate.getDate() + daysMap[day]);
+
         const newEntry = {
             id: uuidv4(),
             name: text,
+            assigned_date: newDate.toLocaleDateString('fr-CA')
         }
 
         try {
