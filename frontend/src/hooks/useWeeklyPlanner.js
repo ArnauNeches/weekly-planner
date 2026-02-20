@@ -206,12 +206,14 @@ export default function useWeeklyPlanner(currentWeek) {
         if (activeContainer === overContainer) {
             const overIndex = weekData[activeContainer].findIndex((t) => t.id === over.id);
 
-            if (activeIndex !== overIndex && overIndex !== -1) {
+            if (activeIndex !== overIndex) {
                 finalIndex = overIndex;
+                
                 setWeekData((prev) => ({
                     ...prev,
                     [activeContainer]: arrayMove(prev[activeContainer], activeIndex, overIndex),
                 }));
+                
             }
         }
 
