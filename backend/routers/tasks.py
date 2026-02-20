@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from models.task import Task
-from schemas.task import TaskCreate, TaskUpdate, WeeklyPlannerResponse
+from schemas.task import TaskCreate, TaskUpdate, WeeklyPlannerResponse, TaskMove
 from uuid import UUID
 from datetime import date, timedelta
 
@@ -91,3 +91,49 @@ def get_week(monday_date: date, db: Session = Depends(get_db)):
         })
     
     return response
+
+@router.patch("{task_id}/move")
+def move_task(task_id: UUID, move_data: TaskMove, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    old_date = task.assigned_date
+    old_pos = task.position
+    new_date = move_data.new_assigned_date
+    new_pos = move_data.new_position
+
+    if (old_date == new_date and old_pos == new_pos):
+        return task
+    
+    if old_date == new_date:
+        if new_pos > old_pos:
+            db.query(Task).filter(
+                Task.assigned_date == old_date,
+                Task.position > old_pos,
+                Task.position <= new_pos
+            ).update({Task.position: Task.position - 1})
+        else:
+            db.query(Task).filter(
+                Task.assigned_date == old_date,
+                Task.position >= new_pos,
+                Task.position < old_pos
+            ).update({Task.position: Task.position + 1})
+    else:
+        db.query(Task).filter(
+            Task.assigned_date == old_date,
+            Task.position > old_pos
+        ).update({Task.position: Task.position - 1})
+
+        db.query(Task).filter(
+            Task.assigned_date == new_date,
+            Task.position > new_pos
+        ).update({Task.position: Task.position + 1})
+    
+    task.assigned_date = new_date
+    task.position = new_pos
+
+    db.commit()
+    db.refresh(task)
+    return task

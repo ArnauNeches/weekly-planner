@@ -1,5 +1,4 @@
 import WeekNavigator from "./components/weekNavigator";
-import useDateLogic from "./hooks/useDateLogic";
 import PlannerBoard from "./components/plannerBoard"; 
 import { motion, AnimatePresence } from "motion/react";
 import { DateProvider } from "./context/DateContext";
