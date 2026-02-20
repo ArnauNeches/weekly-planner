@@ -21,6 +21,10 @@ class TaskUpdate(BaseModel):
     name: Optional[str] = None
     status: Optional[TaskStatus] = None
 
+class TaskMove(BaseModel):
+    new_assigned_date: date
+    new_position: int
+
 class WeeklyPlannerResponse(BaseModel):
 
     monday: List[TaskFrontend]
