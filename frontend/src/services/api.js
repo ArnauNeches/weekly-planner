@@ -33,3 +33,13 @@ export async function updateTaskAPI(taskId, updates){
         body: JSON.stringify(updates) 
     });
 }
+
+export async function moveTaskAPI(taskId, updates) {
+    await fetch(`/api/tasks/${taskId}/move`, {
+        method: 'PATCH',
+        headers: { 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(updates)
+    });
+}

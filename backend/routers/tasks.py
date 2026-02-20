@@ -92,7 +92,7 @@ def get_week(monday_date: date, db: Session = Depends(get_db)):
     
     return response
 
-@router.patch("{task_id}/move")
+@router.patch("/{task_id}/move")
 def move_task(task_id: UUID, move_data: TaskMove, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
 
@@ -128,7 +128,7 @@ def move_task(task_id: UUID, move_data: TaskMove, db: Session = Depends(get_db))
 
         db.query(Task).filter(
             Task.assigned_date == new_date,
-            Task.position > new_pos
+            Task.position >= new_pos
         ).update({Task.position: Task.position + 1})
     
     task.assigned_date = new_date

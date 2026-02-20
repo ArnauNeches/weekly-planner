@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import { DAYS, initialData } from "../data/initialData";
 import { arrayMove } from "@dnd-kit/sortable";
-import { getWeekAPI, deleteTaskAPI, addTaskAPI, updateTaskAPI } from "../services/api";
+import { getWeekAPI, deleteTaskAPI, addTaskAPI, updateTaskAPI, moveTaskAPI } from "../services/api";
 
 export default function useWeeklyPlanner(currentWeek) {
 
@@ -173,7 +173,7 @@ export default function useWeeklyPlanner(currentWeek) {
                     active.rect.current.translated.top > over.rect.top + over.rect.height;
 
                 const modifier = isBelowOverItem ? 1 : 0;
-                newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+                newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length;
             }
 
             return {
@@ -190,23 +190,44 @@ export default function useWeeklyPlanner(currentWeek) {
         });
     }
 
-    function handleDragEnd(event) {
+    async function handleDragEnd(event) {
         const { active, over } = event;
         const activeContainer = findContainer(active.id);
         const overContainer = findContainer(over?.id);
 
-        if ( activeContainer && overContainer && activeContainer === overContainer) {
-            const activeIndex = weekData[activeContainer].findIndex((t) => t.id === active.id);
+        if (!activeContainer || !overContainer)  {
+            setActiveId(null);
+            return;
+        }
+
+        const activeIndex = weekData[activeContainer].findIndex((t) => t.id === active.id);
+        let finalIndex = activeIndex;
+
+        if (activeContainer === overContainer) {
             const overIndex = weekData[activeContainer].findIndex((t) => t.id === over.id);
 
-            if (activeIndex !== overIndex) {
+            if (activeIndex !== overIndex && overIndex !== -1) {
+                finalIndex = overIndex;
                 setWeekData((prev) => ({
                     ...prev,
                     [activeContainer]: arrayMove(prev[activeContainer], activeIndex, overIndex),
                 }));
             }
         }
+
         setActiveId(null);
+
+        try {
+            const newDate = new Date(currentWeek);
+            newDate.setDate(newDate.getDate() + daysMap[activeContainer]);
+            const update = {
+                new_assigned_date: newDate.toLocaleDateString('fr-CA'),
+                new_position: finalIndex
+            }
+            await moveTaskAPI(active.id, update);
+        } catch (error) {
+            console.error("Failed to save move to the database: ", error);
+        }
     }
 
     return {weekData, activeId, addTask, changeStatus, deleteTask, editTask, handleDragOver, handleDragStart, handleDragEnd, findActiveTask}
