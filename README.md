@@ -10,6 +10,8 @@ A simple full-stack application designed to organize your week. This project use
 
 ---
 
+![demo](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDR3NDFjajlxYjJyZXBmeWhiM3R6bmxmZmFxeHAyMDZodG9tZmEzYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/957ZVCxyPqFvn4t7yU/giphy.gif)
+
 ## 📖 Summary
 The Weekly Planner allows users to manage tasks across a 7-day view and between weeks. It features a robust API for task creation, deletion, and status updates, utilizing a relational database to maintain task order and assignments based on a `position` and `assigned_date` logic.
 
