@@ -73,7 +73,7 @@ export default function TaskItem({ task, day, handleChangeStatus, handleDeleteTa
           </div>
           <select
             defaultValue={task.status}
-            className={`text-xs bg-white border border-slate-300 rounded px-2 py-1 ${getSelectorTextStyles(task.status)} cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400 w-fit mt-1`}
+            className={`text-xs bg-white border border-slate-300 rounded px-2 py-1 ${getSelectorTextStyles(task.status)} cursor-pointer focus:outline-none w-fit mt-1`}
             onChange={e => handleChangeStatus(day, e.target.value, task.id)}
           >
             <option className="text-slate-700" value="pending">Pending</option>
