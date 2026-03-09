@@ -112,7 +112,8 @@ export default function useWeeklyPlanner(currentWeek) {
         const newEntry = {
             id: uuidv4(),
             name: text,
-            assigned_date: newDate.toLocaleDateString('fr-CA')
+            assigned_date: newDate.toLocaleDateString('fr-CA'),
+            status: 'pending'
         }
 
         try {
