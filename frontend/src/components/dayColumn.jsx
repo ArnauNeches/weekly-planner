@@ -39,7 +39,7 @@ export default function DayColumn({ children, tasks, onNewTask, onChangeStatus, 
         </button>
       </form>
       <SortableContext items={tasks.map(task=>task.id)} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-col gap-2 min-h-20 lg:min-h-50 lg:h-60 lg:overflow-y-auto">
+        <div className="flex flex-col gap-2 min-h-20 lg:min-h-50 lg:h-80 lg:overflow-y-auto">
           <AnimatePresence>
             {tasks.map((task) => (
               <TaskItem
