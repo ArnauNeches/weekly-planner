@@ -147,7 +147,7 @@ export default function useWeeklyPlanner(currentWeek) {
 
     function handleDragOver(event) {
         const { active, over } = event;
-        const overId = over.id;
+        const overId = over? over.id : null ;
 
         if (!overId || active.id === overId) return;
 

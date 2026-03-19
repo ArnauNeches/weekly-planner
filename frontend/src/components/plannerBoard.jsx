@@ -6,17 +6,28 @@ import { motion, AnimatePresence } from "motion/react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import TaskItem from "./taskItem";
 import { useDate } from "../context/DateContext";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, CalendarSync } from "lucide-react";
 import StatisticsModal from "./statisticsModal";
 
 export default function PlannerBoard() {
-  const { currentWeek } = useDate();
+  const { currentWeek, backCurrentWeek, isCurrentWeek } = useDate();
   const { weekData, activeId, addTask, deleteTask, editTask, changeStatus, handleDragOver, handleDragStart, handleDragEnd, findActiveTask } = useWeeklyPlanner(currentWeek);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
 
   return (
     <>
-      <div className="flex justify-end max-w-7xl mx-auto px-4 mb-2">
+      <div className="flex justify-between max-w-7xl mx-auto px-4 mb-2">
+        <button 
+            onClick={backCurrentWeek}
+            disabled={isCurrentWeek()}
+            className={isCurrentWeek() ? 
+              "flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-300 px-4 py-2 rounded-lg shadow-sm font-medium" :
+              "flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg shadow-sm hover:shadow-md hover:bg-slate-50 transition-all font-medium cursor-pointer"
+            }
+        >
+          <CalendarSync size={18}/>
+          Current week
+        </button>
         <button 
             onClick={() => setIsStatsOpen(true)}
             className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg shadow-sm hover:shadow-md hover:bg-slate-50 transition-all font-medium cursor-pointer"
